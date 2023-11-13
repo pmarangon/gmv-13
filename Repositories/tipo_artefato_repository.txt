@@ -1,0 +1,53 @@
+@Repository
+public class TipoArtefatoNoSQLRepository {
+
+    private final MongoTemplate mongoTemplate;
+
+    public TipoArtefatoNoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public TipoArtefatoNoSQL cria(TipoArtefatoNoSQL tipoArtefato) {
+        Document documento = new Document();
+        documento.put("descricao", tipoArtefato.descricao);
+        documento.put("produtor", tipoArtefato.produtor);
+
+        mongoTemplate.insert(documento, "tipos_de_artefato");
+
+        return tipoArtefato;
+    }
+
+    public TipoArtefatoNoSQL obtem(String id) {
+        Document documento = mongoTemplate.findById(id, "tipos_de_artefato");
+
+        if (documento == null) {
+            throw new RegistroNaoEncontradoException(id);
+        }
+
+        return TipoArtefatoNoSQL.fromDocument(documento);
+    }
+
+    public List<TipoArtefatoNoSQL> lista() {
+        List<Document> documentos = mongoTemplate.findAll("tipos_de_artefato");
+
+        return documentos.stream()
+                .map(TipoArtefatoNoSQL::fromDocument)
+                .collect(Collectors.toList());
+    }
+
+    public TipoArtefatoNoSQL atualiza(TipoArtefatoNoSQL tipoArtefato, String id) {
+        Document documento = new Document();
+        documento.put("descricao", tipoArtefato.descricao);
+        documento.put("produtor", tipoArtefato.produtor);
+
+        mongoTemplate.updateOne("tipos_de_artefato",
+                new Document("id", id),
+                new Document("$set", documento));
+
+        return tipoArtefato;
+    }
+
+    public void deleta(String id) {
+        mongoTemplate.deleteOne("tipos_de_artefato", new Document("id", id));
+    }
+}

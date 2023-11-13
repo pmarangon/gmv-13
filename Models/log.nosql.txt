@@ -1,0 +1,24 @@
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class NoSQLRepository {
+
+    private final MongoTemplate mongoTemplate;
+
+    public NoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public void save(NoSQLEntity entity) {
+        mongoTemplate.save(entity);
+    }
+
+    public NoSQLEntity findById(String id) {
+        return mongoTemplate.findById(id, NoSQLEntity.class);
+    }
+
+    public List<NoSQLEntity> findAll() {
+        return mongoTemplate.findAll(NoSQLEntity.class);
+    }
+}

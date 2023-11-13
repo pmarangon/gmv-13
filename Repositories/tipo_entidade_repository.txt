@@ -1,0 +1,51 @@
+@Repository
+public class TipoEntidadeNoSQLRepository {
+
+    private final MongoTemplate mongoTemplate;
+
+    public TipoEntidadeNoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public TipoEntidadeNoSQL cria(TipoEntidadeNoSQL tipoEntidade) {
+        Document documento = new Document();
+        documento.put("descricao", tipoEntidade.descricao);
+
+        mongoTemplate.insert(documento, "tipos_de_entidade");
+
+        return TipoEntidadeNoSQL.fromDocument(documento);
+    }
+
+    public TipoEntidadeNoSQL obtem(String id) {
+        Document documento = mongoTemplate.findById(id, "tipos_de_entidade");
+
+        if (documento == null) {
+            throw new RegistroNaoEncontradoException(id);
+        }
+
+        return TipoEntidadeNoSQL.fromDocument(documento);
+    }
+
+    public List<TipoEntidadeNoSQL> lista() {
+        List<Document> documentos = mongoTemplate.findAll("tipos_de_entidade");
+
+        return documentos.stream()
+                .map(TipoEntidadeNoSQL::fromDocument)
+                .collect(Collectors.toList());
+    }
+
+    public TipoEntidadeNoSQL atualiza(TipoEntidadeNoSQL tipoEntidade, String id) {
+        Document documento = new Document();
+        documento.put("descricao", tipoEntidade.descricao);
+
+        mongoTemplate.updateOne("tipos_de_entidade",
+                new Document("id", id),
+                new Document("$set", documento));
+
+        return TipoEntidadeNoSQL.fromDocument(documento);
+    }
+
+    public void deleta(String id) {
+        mongoTemplate.deleteOne("tipos_de_entidade", new Document("id", id));
+    }
+}

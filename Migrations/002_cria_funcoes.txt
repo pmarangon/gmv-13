@@ -1,0 +1,18 @@
+// Função que popula os campos criado_em e atualizado_em de uma coleção
+function populaTimestamps(doc) {
+  // Verifica se a operação é uma inserção
+  if (doc.op === "insert") {
+    // Seta o campo criado_em para o tempo atual
+    doc.criado_em = firebase.firestore.FieldValue.serverTimestamp();
+    // Seta o campo atualizado_em para o tempo atual
+    doc.atualizado_em = firebase.firestore.FieldValue.serverTimestamp();
+  }
+
+  // Verifica se a operação é uma atualização
+  if (doc.op === "update") {
+    // Seta o campo atualizado_em para o tempo atual
+    doc.atualizado_em = firebase.firestore.FieldValue.serverTimestamp();
+  }
+
+  return doc;
+}

@@ -1,0 +1,75 @@
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.bson.Document;
+
+@Data
+@NoArgsConstructor
+public class ArtefatoNoSQL {
+
+    private String id;
+    private String tipo;
+    private String entidade;
+    private Boolean ativo;
+    private String descricao;
+    private Map<String, Object> comportamentos;
+    private Date criadoEm;
+    private Date atualizadoEm;
+
+    public ArtefatoNoSQL(String id, String tipo, String entidade, Boolean ativo, String descricao, Map<String, Object> comportamentos, Date criadoEm, Date atualizadoEm) {
+        this.id = id;
+        this.tipo = tipo;
+        this.entidade = entidade;
+        this.ativo = ativo;
+        this.descricao = descricao;
+        this.comportamentos = comportamentos;
+        this.criadoEm = criadoEm;
+        this.atualizadoEm = atualizadoEm;
+    }
+
+    public Document toDocument() {
+        Document document = new Document();
+        document.append("id", id);
+        document.append("tipo", tipo);
+        document.append("entidade", entidade);
+        document.append("ativo", ativo);
+        document.append("descricao", descricao);
+        document.append("comportamentos", comportamentos);
+        document.append("criadoEm", criadoEm);
+        document.append("atualizadoEm", atualizadoEm);
+
+        return document;
+    }
+
+    public static ArtefatoNoSQL fromDocument(Document document) {
+        ArtefatoNoSQL artefato = new ArtefatoNoSQL();
+        artefato.setId(document.getString("id"));
+        artefato.setTipo(document.getString("tipo"));
+        artefato.setEntidade(document.getString("entidade"));
+        artefato.setAtivo(document.getBoolean("ativo"));
+        artefato.setDescricao(document.getString("descricao"));
+        artefato.setComportamentos(document.get("comportamentos", Map.class));
+        artefato.setCriadoEm(document.getDate("criadoEm"));
+        artefato.setAtualizadoEm(document.getDate("atualizadoEm"));
+
+        return artefato;
+    }
+
+    public static Filters.Eq getFilterById(String id) {
+        return Filters.eq("id", id);
+    }
+
+    public static Updates.Set updateAtivo(Boolean ativo) {
+        return Updates.set("ativo", ativo);
+    }
+
+    public static Updates.Set updateDescricao(String descricao) {
+        return Updates.set("descricao", descricao);
+    }
+
+    public static Updates.Set updateComportamentos(Map<String, Object> comportamentos) {
+        return Updates.set("comportamentos", comportamentos);
+    }
+}

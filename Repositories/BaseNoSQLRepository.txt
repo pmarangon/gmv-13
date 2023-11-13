@@ -1,0 +1,53 @@
+@Repository
+public abstract class BaseNoSQLRepository<T> {
+
+    private final MongoTemplate mongoTemplate;
+
+    public BaseNoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    protected abstract String getCollectionName();
+
+    protected abstract T fromDocument(Document documento);
+
+    public T cria(T entidade) {
+        Document documento = new Document();
+        documento.putAll(entidade.toDocument());
+
+        mongoTemplate.insert(documento, getCollectionName());
+
+        return entidade;
+    }
+
+    public T obtem(String id) {
+        Document documento = mongoTemplate.findById(id, getCollectionName());
+
+        if (documento == null) {
+            throw new RegistroNaoEncontradoException(id);
+        }
+
+        return fromDocument(documento);
+    }
+
+    public List<T> lista() {
+        List<Document> documentos = mongoTemplate.findAll(getCollectionName());
+
+        return documentos.stream()
+                .map(this::fromDocument)
+                .collect(Collectors.toList());
+    }
+
+    public T atualiza(T entidade, String id) {
+        Document documento = new Document();
+        documento.putAll(entidade.toDocument());
+
+        mongoTemplate.updateOne(getCollectionName(), new Document("id", id), new Document("$set", documento));
+
+        return entidade;
+    }
+
+    public void deleta(String id) {
+        mongoTemplate.deleteOne(getCollectionName(), new Document("id", id));
+    }
+}

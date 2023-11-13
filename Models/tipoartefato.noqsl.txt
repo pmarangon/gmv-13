@@ -1,0 +1,24 @@
+@RestController
+public class NoSQLController {
+
+    private final NoSQLRepository repository;
+
+    public NoSQLController(NoSQLRepository repository) {
+        this.repository = repository;
+    }
+
+    @PostMapping("/save")
+    public void save(@RequestBody NoSQLEntity entity) {
+        repository.save(entity);
+    }
+
+    @GetMapping("/find/{id}")
+    public NoSQLEntity findById(@PathVariable String id) {
+        return repository.findById(id);
+    }
+
+    @GetMapping("/findAll")
+    public List<NoSQLEntity> findAll() {
+        return repository.findAll();
+    }
+}

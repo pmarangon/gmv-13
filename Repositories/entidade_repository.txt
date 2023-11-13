@@ -1,0 +1,49 @@
+@Repository
+public class EntidadeNoSQLRepository {
+
+    private final MongoTemplate mongoTemplate;
+
+    public EntidadeNoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public EntidadeNoSQL cria(EntidadeNoSQL entidade) {
+        Document documento = entidade.toDocument();
+
+        mongoTemplate.insert(documento, "entidades");
+
+        return entidade;
+    }
+
+    public EntidadeNoSQL obtem(String id) {
+        Document documento = mongoTemplate.findById(id, "entidades");
+
+        if (documento == null) {
+            throw new RegistroNaoEncontradoException(id);
+        }
+
+        return EntidadeNoSQL.fromDocument(documento);
+    }
+
+    public List<EntidadeNoSQL> lista() {
+        List<Document> documentos = mongoTemplate.findAll("entidades");
+
+        return documentos.stream()
+                .map(EntidadeNoSQL::fromDocument)
+                .collect(Collectors.toList());
+    }
+
+    public EntidadeNoSQL atualiza(EntidadeNoSQL entidade, String id) {
+        Document documento = entidade.toDocument();
+
+        mongoTemplate.updateOne("entidades",
+                new Document("id", id),
+                new Document("$set", documento));
+
+        return entidade;
+    }
+
+    public void deleta(String id) {
+        mongoTemplate.deleteOne("entidades", new Document("id", id));
+    }
+}

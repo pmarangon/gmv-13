@@ -1,0 +1,7 @@
+// Cria uma coleção para armazenar os logs
+firebase.firestore().collection("logs");
+
+// Cria um trigger que executa a função populaTimestamps() para preencher os
+// campos "criado_em" e "atualizado_em" ao criar ou atualizar dados na coleção
+// "logs"
+firebase.firestore().collection("logs").on("before", populaTimestamps);

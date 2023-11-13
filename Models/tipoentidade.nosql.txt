@@ -1,0 +1,36 @@
+@Data
+@NoArgsConstructor
+public class TipoEntidadeNoSQL {
+
+    private String id;
+    private String descricao;
+    private Date criadoEm;
+    private Date atualizadoEm;
+
+    public TipoEntidadeNoSQL(String id, String descricao, Date criadoEm, Date atualizadoEm) {
+        this.id = id;
+        this.descricao = descricao;
+        this.criadoEm = criadoEm;
+        this.atualizadoEm = atualizadoEm;
+    }
+
+    public Document toDocument() {
+        Document document = new Document();
+        document.append("id", id);
+        document.append("descricao", descricao);
+        document.append("criadoEm", criadoEm);
+        document.append("atualizadoEm", atualizadoEm);
+
+        return document;
+    }
+
+    public static TipoEntidadeNoSQL fromDocument(Document document) {
+        TipoEntidadeNoSQL tipoEntidade = new TipoEntidadeNoSQL();
+        tipoEntidade.setId(document.getString("id"));
+        tipoEntidade.setDescricao(document.getString("descricao"));
+        tipoEntidade.setCriadoEm(document.getDate("criadoEm"));
+        tipoEntidade.setAtualizadoEm(document.getDate("atualizadoEm"));
+
+        return tipoEntidade;
+    }
+}

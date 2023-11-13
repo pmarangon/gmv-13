@@ -1,0 +1,171 @@
+// Usuários
+{
+  "collection": "usuarios",
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  },
+  "fields": {
+    "id_google": {
+      "type": "string"
+    },
+    "nome": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "index": {
+        "unique": true
+      }
+    },
+    "senha": {
+      "type": "string"
+    },
+    "foto": {
+      "type": "string"
+    },
+    "criado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    },
+    "atualizado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    }
+  }
+}
+
+// Tipos de entidade
+{
+  "collection": "tipos_de_entidade",
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  },
+  "fields": {
+    "descricao": {
+      "type": "string",
+      "index": {
+        "unique": true
+      }
+    },
+    "criado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    },
+    "atualizado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    }
+  }
+}
+
+// Entidades
+{
+  "collection": "entidades",
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  },
+  "fields": {
+    "tipo": {
+      "type": "string",
+      "reference": {
+        "collection": "tipos_de_entidade"
+      }
+    },
+    "descricao": {
+      "type": "string"
+    },
+    "cep": {
+      "type": "string"
+    },
+    "complemento": {
+      "type": "string"
+    },
+    "endereco": {
+      "type": "string"
+    },
+    "bairro": {
+      "type": "string"
+    },
+    "cidade": {
+      "type": "string"
+    },
+    "estado": {
+      "type": "string"
+    },
+    "criado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    },
+    "atualizado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    }
+  }
+}
+
+// Tipos de artefato
+{
+  "collection": "tipos_de_artefato",
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  },
+  "fields": {
+    "descricao": {
+      "type": "string",
+      "index": {
+        "unique": true
+      }
+    },
+    "produtor": {
+      "type": "boolean",
+      "default": false
+    },
+    "criado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    },
+    "atualizado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    }
+  }
+}
+
+// Artefatos
+{
+  "collection": "artefatos",
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  },
+  "fields": {
+    "tipo": {
+      "type": "string",
+      "reference": {
+        "collection": "tipos_de_artefato"
+      }
+    },
+    "entidade": {
+      "type": "string",
+      "reference": {
+        "collection": "entidades"
+      }
+    },
+    "descricao": {
+      "type": "string"
+    },
+    "ativo": {
+      "type": "boolean",
+      "default": false
+    },
+    "comportamentos": {
+      "type": "object"
+    },
+    "criado_em": {
+      "type": "timestamp",
+      "serverTimestamp": true
+    

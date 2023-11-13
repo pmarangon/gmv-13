@@ -1,0 +1,45 @@
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
+public class SensorTemperatura {
+
+    private static final String API_HOST = "<URL DA API>";
+    private static final String API_USER = "<USUARIO DA API>";
+    private static final String API_PASSWORD = "<SENHA DA API>";
+
+    private static final String MQTT_HOST = "<HOST MQTT>";
+    private static final String MQTT_PORT = 1883;
+    private static final String MQTT_USERNAME = "<USUARIO MQTT>";
+    private static final String MQTT_PASSWORD = "<SENHA MQTT>";
+    private static final String MQTT_TOPIC_ROUTING_KEY = "eventos";
+
+    private final MQTTClient mqttClient;
+
+    public SensorTemperatura() throws IOException {
+        mqttClient = new MQTTClient(MQTT_HOST, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD);
+        mqttClient.connect();
+    }
+
+    public void executa() throws IOException {
+        // Inicia um access point para que o sensor possa ser controlado localmente
+        // ...
+
+        // Lê o valor da temperatura do sensor
+        // ...
+
+        // Publica o valor da temperatura no tópico MQTT
+        String mensagem = String.format("{\"artefato\": \"1\", \"corpo\": {\"temperatura\": \"%s\"}}", temperatura);
+        mqttClient.publish(MQTT_TOPIC_ROUTING_KEY, mensagem.getBytes());
+    }
+
+    public void fecha() {
+        mqttClient.disconnect();
+    }
+}

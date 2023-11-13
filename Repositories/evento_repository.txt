@@ -1,0 +1,61 @@
+@Repository
+public class EventoNoSQLRepository {
+
+    private final MongoTemplate mongoTemplate;
+
+    public EventoNoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public EventoNoSQL cria(EventoNoSQL evento) {
+        if (evento.corpo instanceof Map) {
+            evento.corpo = evento.corpo.toJson();
+        }
+
+        Document documento = new Document();
+        documento.put("artefato", evento.artefato);
+        documento.put("corpo", evento.corpo);
+
+        mongoTemplate.insert(documento, "eventos");
+
+        return EventoNoSQL.fromDocument(documento);
+    }
+
+    public EventoNoSQL obtem(String id) {
+        Document documento = mongoTemplate.findById(id, "eventos");
+
+        if (documento == null) {
+            throw new RegistroNaoEncontradoException(id);
+        }
+
+        return EventoNoSQL.fromDocument(documento);
+    }
+
+    public List<EventoNoSQL> lista() {
+        List<Document> documentos = mongoTemplate.findAll("eventos");
+
+        return documentos.stream()
+                .map(EventoNoSQL::fromDocument)
+                .collect(Collectors.toList());
+    }
+
+    public EventoNoSQL atualiza(EventoNoSQL evento, String id) {
+        if (evento.corpo instanceof Map) {
+            evento.corpo = evento.corpo.toJson();
+        }
+
+        Document documento = new Document();
+        documento.put("artefato", evento.artefato);
+        documento.put("corpo", evento.corpo);
+
+        mongoTemplate.updateOne("eventos",
+                new Document("id", id),
+                new Document("$set", documento));
+
+        return EventoNoSQL.fromDocument(documento);
+    }
+
+    public void deleta(String id) {
+        mongoTemplate.deleteOne("eventos", new Document("id", id));
+    }
+}

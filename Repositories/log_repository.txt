@@ -1,0 +1,17 @@
+@Repository
+public class LogNoSQLRepository {
+
+    private final MongoTemplate mongoTemplate;
+
+    public LogNoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public void cria(LogNoSQL log) {
+        Document documento = new Document();
+        documento.put("nivel", log.nivel);
+        documento.put("mensagem", log.mensagem);
+
+        mongoTemplate.insert(documento, "logs");
+    }
+}

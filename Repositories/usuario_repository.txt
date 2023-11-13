@@ -1,0 +1,63 @@
+@Repository
+public class UsuarioNoSQLRepository {
+
+    private final MongoTemplate mongoTemplate;
+
+    public UsuarioNoSQLRepository(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    public String criptografaSenha(String senha) {
+        return BCrypt.hashpw(senha, BCrypt.gensalt(14));
+    }
+
+    public boolean autoriza(String email, String senha) {
+        Document documento = mongoTemplate.findById(email, "usuarios");
+
+        if (documento == null) {
+            return false;
+        }
+
+        String senhaCriptografada = documento.getString("senha");
+
+        return BCrypt.checkpw(senha, senhaCriptografada);
+    }
+
+    public UsuarioNoSQL cria(UsuarioNoSQL usuario) {
+        // Criptografa senha ao salvar no banco
+        usuario.setSenha(criptografaSenha(usuario.getSenha()));
+
+        mongoTemplate.insert(usuario, "usuarios");
+
+        return usuario;
+    }
+
+    public UsuarioNoSQL obtem(String id) {
+        Document documento = mongoTemplate.findById(id, "usuarios");
+
+        return UsuarioNoSQL.fromDocument(documento);
+    }
+
+    public List<UsuarioNoSQL> lista() {
+        List<Document> documentos = mongoTemplate.findAll("usuarios");
+
+        return documentos.stream()
+                .map(UsuarioNoSQL::fromDocument)
+                .collect(Collectors.toList());
+    }
+
+    public UsuarioNoSQL atualiza(UsuarioNoSQL usuario, String id) {
+        // Criptografa senha ao salvar no banco
+        usuario.setSenha(criptografaSenha(usuario.getSenha()));
+
+        mongoTemplate.updateOne("usuarios",
+                new Document("id", id),
+                new Document("$set", usuario.toDocument()));
+
+        return usuario;
+    }
+
+    public void deleta(String id) {
+        mongoTemplate.deleteOne("usuarios", new Document("id", id));
+    }
+}

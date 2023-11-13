@@ -1,0 +1,103 @@
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.bson.Document;
+
+@Data
+@NoArgsConstructor
+public class EntidadeNoSQL {
+
+    private String id;
+    private String tipo;
+    private String descricao;
+    private String cep;
+    private String complemento;
+    private String bairro;
+    private String endereco;
+    private String cidade;
+    private String estado;
+    private Date criadoEm;
+    private Date atualizadoEm;
+
+    public EntidadeNoSQL(String id, String tipo, String descricao, String cep, String complemento, String bairro, String endereco, String cidade, String estado, Date criadoEm, Date atualizadoEm) {
+        this.id = id;
+        this.tipo = tipo;
+        this.descricao = descricao;
+        this.cep = cep;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.endereco = endereco;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.criadoEm = criadoEm;
+        this.atualizadoEm = atualizadoEm;
+    }
+
+    public Document toDocument() {
+        Document document = new Document();
+        document.append("id", id);
+        document.append("tipo", tipo);
+        document.append("descricao", descricao);
+        document.append("cep", cep);
+        document.append("complemento", complemento);
+        document.append("bairro", bairro);
+        document.append("endereco", endereco);
+        document.append("cidade", cidade);
+        document.append("estado", estado);
+        document.append("criadoEm", criadoEm);
+        document.append("atualizadoEm", atualizadoEm);
+
+        return document;
+    }
+
+    public static EntidadeNoSQL fromDocument(Document document) {
+        EntidadeNoSQL entidade = new EntidadeNoSQL();
+        entidade.setId(document.getString("id"));
+        entidade.setTipo(document.getString("tipo"));
+        entidade.setDescricao(document.getString("descricao"));
+        entidade.setCep(document.getString("cep"));
+        entidade.setComplemento(document.getString("complemento"));
+        entidade.setBairro(document.getString("bairro"));
+        entidade.setEndereco(document.getString("endereco"));
+        entidade.setCidade(document.getString("cidade"));
+        entidade.setEstado(document.getString("estado"));
+        entidade.setCriadoEm(document.getDate("criadoEm"));
+        entidade.setAtualizadoEm(document.getDate("atualizadoEm"));
+
+        return entidade;
+    }
+
+    public static Filters.Eq getFilterById(String id) {
+        return Filters.eq("id", id);
+    }
+
+    public static Updates.Set updateDescricao(String descricao) {
+        return Updates.set("descricao", descricao);
+    }
+
+    public static Updates.Set updateCep(String cep) {
+        return Updates.set("cep", cep);
+    }
+
+    public static Updates.Set updateComplemento(String complemento) {
+        return Updates.set("complemento", complemento);
+    }
+
+    public static Updates.Set updateBairro(String bairro) {
+        return Updates.set("bairro", bairro);
+    }
+
+    public static Updates.Set updateEndereco(String endereco) {
+        return Updates.set("endereco", endereco);
+    }
+
+    public static Updates.Set updateCidade(String cidade) {
+        return Updates.set("cidade", cidade);
+    }
+
+    public static Updates.Set updateEstado(String estado) {
+        return Updates.set("estado", estado);
+    }
+}

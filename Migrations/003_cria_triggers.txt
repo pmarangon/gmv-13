@@ -1,0 +1,29 @@
+// Cria um trigger que executa a função populaTimestamps() para preencher os
+// campos "criado_em" e "atualizado_em" ao criar ou atualizar dados na coleção
+// "usuarios"
+firebase.firestore().collection("usuarios").on("before", populaTimestamps);
+
+// Cria um trigger que executa a função populaTimestamps() para preencher os
+// campos "criado_em" e "atualizado_em" ao criar ou atualizar dados na coleção
+// "tipos_de_entidade"
+firebase.firestore().collection("tipos_de_entidade").on("before", populaTimestamps);
+
+// Cria um trigger que executa a função populaTimestamps() para preencher os
+// campos "criado_em" e "atualizado_em" ao criar ou atualizar dados na coleção
+// "entidades"
+firebase.firestore().collection("entidades").on("before", populaTimestamps);
+
+// Cria um trigger que executa a função populaTimestamps() para preencher os
+// campos "criado_em" e "atualizado_em" ao criar ou atualizar dados na coleção
+// "tipos_de_artefato"
+firebase.firestore().collection("tipos_de_artefato").on("before", populaTimestamps);
+
+// Cria um trigger que executa a função populaTimestamps() para preencher os
+// campos "criado_em" e "atualizado_em" ao criar ou atualizar dados na coleção
+// "artefatos"
+firebase.firestore().collection("artefatos").on("before", populaTimestamps);
+
+// Cria um trigger que executa a função populaTimestamps() para preencher os
+// campos "criado_em" e "atualizado_em" ao criar ou atualizar dados na coleção
+// "eventos"
+firebase.firestore().collection("eventos").on("before", populaTimestamps);
